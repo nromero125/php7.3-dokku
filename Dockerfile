@@ -9,7 +9,8 @@ RUN apt-get update && \
     apt-get install -y software-properties-common && \
     add-apt-repository -y ppa:ondrej/php && \
     apt-get update
-RUN apt-get -y install curl nginx zip supervisor git php7.3 php7.3-mysql php7.3-sqlite3 php7.3-pgsql php7.3-zip php7.3-imap php7.3-bcmath php7.3-memcached php7.3-fpm php7.3-mbstring php7.3-xml php7.3-curl php7.3-intl php7.3-readline php7.3-cli php7.3-dev php7.3-gd php7.3-soap
+RUN curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
+RUN apt-get -y install curl nginx zip supervisor git php7.3 php7.3-mysql php7.3-sqlite3 php7.3-pgsql php7.3-zip php7.3-imap php7.3-bcmath php7.3-memcached php7.3-fpm php7.3-mbstring php7.3-xml php7.3-curl php7.3-intl php7.3-readline php7.3-cli php7.3-dev php7.3-gd php7.3-soap nodejs
 
 
 
@@ -19,17 +20,7 @@ RUN curl -sS https://getcomposer.org/installer | php && \
 
 
 # Install Node/NPM
-RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
-ENV NODE_VER v8.11.3
-ENV NVM_DIR "/root/.nvm"
-RUN [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" \
-    && nvm install $NODE_VER \
-    && nvm alias default $NODE_VER \
-    && nvm use default \
-    && npm install -g webpack
-ENV BASE_NODE_PATH $NVM_DIR/versions/node
-ENV NODE_PATH $BASE_NODE_PATH/$NODE_VER/lib/node_modules
-ENV PATH $BASE_NODE_PATH/$NODE_VER/bin:$PATH
+RUN npm install -g webpack
 
 
 # Configurations
@@ -57,10 +48,7 @@ RUN chmod 755 /run.sh
 
 RUN mkdir /app
 WORKDIR /app
-RUN mkdir /app/public && touch /app/public/index.php && echo '<?php phpinfo();?>' > /app/public/index.php
-
 
 EXPOSE 80
-
 
 CMD ["/run.sh"]
